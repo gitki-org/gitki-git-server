@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
-    "nodekit": "^0.9.2"
+    "nodegit": "^0.24.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
@@ -28,6 +30,8 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.4.0",
+    "@types/express": "^4.16.1",
+    "@types/node": "^11.12.2",
     "babel-plugin-module-resolver": "^3.2.0"
   }
 }

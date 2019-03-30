@@ -14,7 +14,7 @@ try {
   process.exit(1);
 }
 
-console.log('App [%s] is starting... version: %s ', pJson.name, pJson.version);
+console.log('App [%s] is starting... version: %s', pJson.name, pJson.version);
 
 webserver();
 

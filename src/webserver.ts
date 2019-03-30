@@ -4,14 +4,20 @@ import express, { Request, Response, NextFunction } from 'express';
 import http from 'http';
 import util from 'util';
 
+import * as apis from './apis';
+
 const port = 4123;
 
 const lazyLoadableWebServer = () => {
   const app = express();
 
+  app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(httpLogger);
+
+  app.post('/me', apis.getMe);
+  app.post('/user', apis.setUser);
 
   app.use(middlewareNotFound);
   app.use(errorHandler);

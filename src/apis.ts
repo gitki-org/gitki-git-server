@@ -72,11 +72,11 @@ export async function repos(req: Request, res: Response, next) {
   try {
     const { orgName } = req.body;
     const reposRef = db.collection('repos');
-    const query = reposRef.where('orgName', '==', orgName);
+    const query = orgName ? reposRef.where('orgName', '==', orgName) : reposRef;
     const result = await query.get();
 
     const repos = result.docs.map((d) => {
-      return d.data() && d.data().repoName;
+      return d.data() && d.data();
     });
 
     res.send({

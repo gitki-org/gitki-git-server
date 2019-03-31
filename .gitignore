@@ -167,4 +167,4 @@ dist/
 .vscode/
 __temp/
 package-lock.json
-authKeys/
+auth-keys/

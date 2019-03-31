@@ -3,13 +3,28 @@ import fs from 'fs';
 import path from 'path';
 import { Request, Response, NextFunction } from 'express';
 
+import FileExplorer from '@@modules/FileExplorer';
 import Git from '@@modules/Git';
 import paths from '@@src/paths';
 import * as utils from '@@utils/utils';
 
 const db = new (Firestore as any)();
 
-export async function getMe(req: Request, res: Response, next) {
+export async function index(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { orgName, repoName } = req.body;
+    const repoHash = utils.hash(`${orgName}-${repoName}`);
+
+    const contents = await FileExplorer.openIndex(orgName, repoName, repoHash);
+    res.send({
+      contents,
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function me(req: Request, res: Response, next) {
   try {
     const { username } = req.body;
 
@@ -71,15 +86,16 @@ export async function newRepo(req: Request, res: Response, next) {
         repoName,
       });
 
-      const gitRepo = Git.makeGitRepo(orgName, repoName, repoHash);
+      const gitRepo = await Git.makeGitRepo(orgName, repoName, repoHash);
 
       return {
+        gitRepo,
         orgRef,
       };
     });
 
     res.send({
-      msg: 'repo is successfully created',
+      gitRepo: dbResult.gitRepo,
       orgName,
       orgRef: dbResult.orgRef.path,
       repoName,

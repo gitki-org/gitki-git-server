@@ -16,7 +16,8 @@ const lazyLoadableWebServer = () => {
   app.use(bodyParser.json());
   app.use(httpLogger);
 
-  app.post('/me', apis.getMe);
+  app.post('/index', apis.index);
+  app.post('/me', apis.me);
   app.post('/user', apis.newUser);
   app.post('/git/commits', apis.commits);
   app.post('/git/repos', apis.repos);

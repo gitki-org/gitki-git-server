@@ -9,19 +9,25 @@ async function makeGitRepo(orgName, repoName, repoHash) {
   try {
     const pathToRepo = path.resolve(paths.gitStorage, orgName, repoHash);
     const pathToDoc = path.resolve(pathToRepo, 'doc');
+    const isRepo = fs.existsSync(pathToRepo);
+    
+    if (!isRepo) {
+      fs.mkdirSync(pathToDoc, { recursive: true });
+      fs.writeFileSync(path.resolve(pathToDoc, 'index.md'), repoName, {
+        flag: 'w',
+      });
 
-    fs.mkdirSync(pathToDoc, { recursive: true });
-    fs.writeFileSync(path.resolve(pathToDoc, 'index.md'), 'Initil commit', {
-      flag: 'w',
-    });
+      const git = simpleGit(pathToRepo)
+      await git.init()
+        .then(() => git.add(pathToRepo))
+        .then(() => git.commit('Initial commit'))
+        .then((summary) => console.log('Commit is made: %o', summary));
 
-    const git = simpleGit(pathToRepo)
-    git.init()
-      .then(() => git.add(pathToRepo))
-      .then(() => git.commit('Initial commit'))
-      .then((summary) => console.log('Commit is made: %s', summary));
-
-    return 1  ;
+      return 'Git repo is successfully initialized';
+    } else {
+      console.log('Repo is already intialized');
+      return 'Repo is already intialized';
+    }
   } catch (err) {
     throw err;
   }

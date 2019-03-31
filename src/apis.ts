@@ -1,6 +1,7 @@
 import Firestore from '@google-cloud/firestore';
 import fs from 'fs';
 import nodegit from 'nodegit';
+import simpleGit from 'simple-git/promise';
 import path from 'path';
 import { Request, Response, NextFunction } from 'express';
 
@@ -110,15 +111,22 @@ export async function repos(req: Request, res: Response, next) {
 }
 
 async function makeGitRepo(orgName, repoName, repoHash) {
-  const pathToRepo = path.resolve(paths.gitStorage, orgName, repoHash);
-  const pathToDoc = path.resolve(pathToRepo, 'doc');
-  
   try {
-    await nodegit.Repository.init(pathToRepo, 0);
+    const pathToRepo = path.resolve(paths.gitStorage, orgName, repoHash);
+    const pathToDoc = path.resolve(pathToRepo, 'doc');
+
     fs.mkdirSync(pathToDoc, { recursive: true });
-    fs.writeFileSync(path.resolve(pathToDoc, 'index.md'), repoName, {
-      flag: 'wx',
+    fs.writeFileSync(path.resolve(pathToDoc, 'index.md'), 'Initil commit', {
+      flag: 'w',
     });
+
+    const git = simpleGit(pathToRepo)
+    git.init()
+      .then(() => git.add(pathToRepo))
+      .then(() => git.commit('Initial commit'))
+      .then((summary) => console.log(123, summary));
+
+    console.log(123, 4);
 
     return 1;
   } catch (err) {

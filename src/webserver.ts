@@ -19,6 +19,7 @@ const lazyLoadableWebServer = () => {
   app.post('/index', apis.index);
   app.post('/me', apis.me);
   app.post('/user', apis.newUser);
+  app.post('/git/commit', apis.commit);
   app.post('/git/commits', apis.commits);
   app.post('/git/repos', apis.repos);
   app.post('/git/newRepo', apis.newRepo);

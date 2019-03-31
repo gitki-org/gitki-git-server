@@ -13,9 +13,8 @@ const db = new (Firestore as any)();
 export async function index(req: Request, res: Response, next: NextFunction) {
   try {
     const { orgName, repoName } = req.body;
-    const repoHash = utils.hash(`${orgName}-${repoName}`);
 
-    const contents = await FileExplorer.openIndex(orgName, repoName, repoHash);
+    const contents = await FileExplorer.openIndex(orgName, repoName);
     res.send({
       contents,
     });
@@ -86,7 +85,11 @@ export async function newRepo(req: Request, res: Response, next) {
         repoName,
       });
 
-      const gitRepo = await Git.makeGitRepo(orgName, repoName, repoHash);
+      const gitRepo = await Git.commit({
+        commitMsg: 'Initial commit',
+        orgName,
+        repoName,
+      });
 
       return {
         gitRepo,
@@ -125,12 +128,41 @@ export async function repos(req: Request, res: Response, next) {
   }
 }
 
+export async function commit(req: Request, res: Response, next) {
+  try {
+    const { 
+      commitMsg,
+      contents, 
+      orgName, 
+      repoName,
+    } = req.body;
+    
+    await FileExplorer.editIndex({
+      contents,
+      orgName,
+      repoName,
+    });
+
+    const msg = await Git.commit({
+      commitMsg,
+      orgName,
+      repoName,
+    });
+
+    res.send({
+      msg,
+    });
+  } catch (err) {
+    throw err;
+  }
+}
+
 export async function commits(req: Request, res: Response, next) {
   try {
     const { orgName, repoName } = req.body;
     const repoHash = utils.hash(`${orgName}-${repoName}`);
 
-    const commits = await Git.getCommits(orgName, repoName, repoHash);
+    const commits = await Git.log(orgName, repoName, repoHash);
     
     res.send({
       commits: commits.all,

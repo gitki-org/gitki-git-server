@@ -5,35 +5,38 @@ import path from 'path';
 import paths from '@@src/paths';
 import * as utils from '@@utils/utils';
 
-async function makeGitRepo(orgName, repoName, repoHash) {
+async function commit({
+  commitMsg = 'Empty msg',
+  orgName,
+  repoName,
+}: any) {
   try {
+    const repoHash = utils.hash(`${orgName}-${repoName}`);
     const pathToRepo = path.resolve(paths.gitStorage, orgName, repoHash);
     const pathToDoc = path.resolve(pathToRepo, 'doc');
     const isRepo = fs.existsSync(pathToRepo);
-    
+
     if (!isRepo) {
       fs.mkdirSync(pathToDoc, { recursive: true });
       fs.writeFileSync(path.resolve(pathToDoc, 'index.md'), repoName, {
         flag: 'w',
       });
-
-      const git = simpleGit(pathToRepo)
-      await git.init()
-        .then(() => git.add(pathToRepo))
-        .then(() => git.commit('Initial commit'))
-        .then((summary) => console.log('Commit is made: %o', summary));
-
-      return 'Git repo is successfully initialized';
-    } else {
-      console.log('Repo is already intialized');
-      return 'Repo is already intialized';
     }
+
+    const git = simpleGit(pathToRepo)
+    await git.init()
+      .then(() => git.add(pathToRepo))
+      .then(() => git.commit(commitMsg))
+      .then((summary) => console.log('Commit is made: %o', summary));
+
+    return commitMsg;
+
   } catch (err) {
     throw err;
   }
 }
 
-async function getCommits(orgName, repoName, repoHash) {
+async function log(orgName, repoName, repoHash) {
   try {
     const pathToRepo = path.resolve(paths.gitStorage, orgName, repoHash);
     
@@ -49,8 +52,8 @@ async function getCommits(orgName, repoName, repoHash) {
 }
 
 const Git = {
-  getCommits,
-  makeGitRepo,
+  commit,
+  log,
 };
 
 export default Git;

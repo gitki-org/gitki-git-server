@@ -3,6 +3,7 @@ module.exports = {
     [
       "module-resolver", {
         "alias": {
+          "@@modules": "./src/modules",
           "@@src": "./src",
           "@@utils": "./src/utils"
         },

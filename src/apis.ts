@@ -1,10 +1,9 @@
 import Firestore from '@google-cloud/firestore';
 import fs from 'fs';
-import nodegit from 'nodegit';
-import simpleGit from 'simple-git/promise';
 import path from 'path';
 import { Request, Response, NextFunction } from 'express';
 
+import Git from '@@modules/Git';
 import paths from '@@src/paths';
 import * as utils from '@@utils/utils';
 
@@ -72,7 +71,7 @@ export async function newRepo(req: Request, res: Response, next) {
         repoName,
       });
 
-      const gitRepo = makeGitRepo(orgName, repoName, repoHash);
+      const gitRepo = Git.makeGitRepo(orgName, repoName, repoHash);
 
       return {
         orgRef,
@@ -110,25 +109,16 @@ export async function repos(req: Request, res: Response, next) {
   }
 }
 
-async function makeGitRepo(orgName, repoName, repoHash) {
+export async function commits(req: Request, res: Response, next) {
   try {
-    const pathToRepo = path.resolve(paths.gitStorage, orgName, repoHash);
-    const pathToDoc = path.resolve(pathToRepo, 'doc');
+    const { orgName, repoName } = req.body;
+    const repoHash = utils.hash(`${orgName}-${repoName}`);
 
-    fs.mkdirSync(pathToDoc, { recursive: true });
-    fs.writeFileSync(path.resolve(pathToDoc, 'index.md'), 'Initil commit', {
-      flag: 'w',
+    const commits = await Git.getCommits(orgName, repoName, repoHash);
+    
+    res.send({
+      commits: commits.all,
     });
-
-    const git = simpleGit(pathToRepo)
-    git.init()
-      .then(() => git.add(pathToRepo))
-      .then(() => git.commit('Initial commit'))
-      .then((summary) => console.log(123, summary));
-
-    console.log(123, 4);
-
-    return 1;
   } catch (err) {
     throw err;
   }

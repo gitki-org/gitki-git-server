@@ -12,6 +12,9 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "paths": {
+      "@@modules/*": [
+        "src/modules/*" 
+      ],
       "@@src/*": [
         "src/*" 
       ],

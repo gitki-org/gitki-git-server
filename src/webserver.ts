@@ -17,7 +17,9 @@ const lazyLoadableWebServer = () => {
   app.use(httpLogger);
 
   app.post('/me', apis.getMe);
-  app.post('/user', apis.setUser);
+  app.post('/user', apis.newUser);
+  app.post('/git/repos', apis.repos);
+  app.post('/git/newRepo', apis.newRepo);
 
   app.use(middlewareNotFound);
   app.use(errorHandler);

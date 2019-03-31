@@ -1,25 +1,16 @@
-import nodegit from 'nodegit';
 import path from 'path';
 
 import webserver from './webserver';
+import paths from './paths';
 
-const cwd = process.cwd();
-let pJson;
+console.log('App is starting...');
 
 try {
-  const pJsonPath = path.resolve(cwd, 'package.json');
-  pJson = require(pJsonPath);
+  const pJson = require(paths.pJson);
+  console.log('App name: %s, version %s', pJson.name, pJson.version);
 } catch (err) {
-  console.log('package.json is not found. Is current working directory correctly configured?');
+  console.log('package.json is not found. Is current working directory correctly configured? %s', process.cwd());
   process.exit(1);
 }
 
-console.log('App [%s] is starting... version: %s', pJson.name, pJson.version);
-
 webserver();
-
-// const pathToRepo = path.resolve(CWD, 'git-storage', 'p');
-// nodegit.Repository.init(pathToRepo, 0).then(function (repo) {
-//   console.log(123, repo);
-//   // Inside of this function we have an open repo
-// });

@@ -11,6 +11,14 @@
     ],
     "module": "commonjs",
     "moduleResolution": "node",
+    "paths": {
+      "@@src/*": [
+        "src/*" 
+      ],
+      "@@utils/*": [
+        "src/utils/*" 
+      ],
+    },
     "strictNullChecks": true,
     "target": "es6"
   },

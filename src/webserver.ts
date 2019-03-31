@@ -5,6 +5,7 @@ import http from 'http';
 import util from 'util';
 
 import * as apis from './apis';
+import * as userApis from '@@apis/userApis';
 
 const port = 4123;
 
@@ -17,8 +18,9 @@ const lazyLoadableWebServer = () => {
   app.use(httpLogger);
 
   app.post('/index', apis.index);
-  app.post('/me', apis.me);
-  app.post('/user', apis.newUser);
+  app.post('/me', userApis.me);
+  app.post('/newUser', userApis.newUser);
+  app.post('/users', userApis.users);
   app.post('/git/commit', apis.commit);
   app.post('/git/commits', apis.commits);
   app.post('/git/repos', apis.repos);

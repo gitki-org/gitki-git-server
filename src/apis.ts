@@ -1,14 +1,12 @@
-import Firestore from '@google-cloud/firestore';
 import fs from 'fs';
 import path from 'path';
 import { Request, Response, NextFunction } from 'express';
 
+import db from '@@src/db';
 import FileExplorer from '@@modules/FileExplorer';
 import Git from '@@modules/Git';
 import paths from '@@src/paths';
 import * as utils from '@@utils/utils';
-
-const db = new (Firestore as any)();
 
 export async function index(req: Request, res: Response, next: NextFunction) {
   try {
@@ -17,45 +15,6 @@ export async function index(req: Request, res: Response, next: NextFunction) {
     const contents = await FileExplorer.openIndex(orgName, repoName);
     res.send({
       contents,
-    });
-  } catch (err) {
-    throw err;
-  }
-}
-
-export async function me(req: Request, res: Response, next) {
-  try {
-    const { username } = req.body;
-
-    const users = db.collection('orgs');
-    const doc = users.doc(username);
-    console.log('doc: %o', doc);
-
-    res.send({
-      ...doc.get(),
-    });
-  } catch (err) {
-    throw err;
-  }
-}
-
-export async function newUser(req: Request, res: Response, next) {
-  try {
-    const { username } = req.body;
-
-    const doc = db.collection('orgs')
-      .doc(username);
-    
-    await doc.set({
-      username,
-    });
-
-    const result = await doc.get();
-    console.log('db written', result);
-
-    res.send({
-      msg: 'new user is successfully created',
-      ...result.data(),
     });
   } catch (err) {
     throw err;

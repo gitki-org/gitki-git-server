@@ -1,5 +1,4 @@
 import fs from 'fs';
-import simpleGit from 'simple-git/promise';
 import path from 'path';
 
 import paths from '@@src/paths';

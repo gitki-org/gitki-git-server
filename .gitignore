@@ -168,3 +168,4 @@ dist/
 __temp/
 package-lock.json
 auth-keys/
+git-storage/
